@@ -6,13 +6,18 @@ import {
     TableRow,
     Collapse,
     IconButton,
+    Button,
+    TableHead,
+    Tab,
+    Box,
+    Container
 } from "@mui/material";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import AddIcon from '@mui/icons-material/Add';
 import { HorizontalRule } from "@mui/icons-material";
 
 
-export default function CollapsibleTable() {
+export default function CustomTable() {
     const [tableData, setTableData] = useState(data);
     const [openRows, setOpenRows] = useState({});
 
@@ -22,7 +27,36 @@ export default function CollapsibleTable() {
             [index]: !prevOpenRows[index],
         }));
     };
-
+    const toggleAllHandler = () => {
+        let total = tableData.length;
+        let toggleObj = openRows;
+        for (let i = 0; i < total; i++) {
+            setOpenRows((prevOpenRows) => ({
+                ...prevOpenRows,
+                [i]: !prevOpenRows[i],
+            }));
+        }
+    }
+    const openAllHandler = () => {
+        let total = tableData.length;
+        let toggleObj = openRows;
+        for (let i = 0; i < total; i++) {
+            setOpenRows((prevOpenRows) => ({
+                ...prevOpenRows,
+                [i]: true,
+            }));
+        }
+    }
+    const closeAllHandler = () => {
+        let total = tableData.length;
+        let toggleObj = openRows;
+        for (let i = 0; i < total; i++) {
+            setOpenRows((prevOpenRows) => ({
+                ...prevOpenRows,
+                [i]: false,
+            }));
+        }
+    }
     const onDragEnd = (result) => {
         const { source, destination, draggableId } = result;
 
@@ -274,17 +308,39 @@ export default function CollapsibleTable() {
 
     return (
         <React.Fragment>
-            <Table aria-label="simple table" sx={{ background: '#fff', }} >
+            <div className="button-wrapper">
+                <Button variant="contained" onClick={() => {
+                    toggleAllHandler();
+                }}>Toggle All</Button>
+                <Button variant="contained" onClick={() => {
+                    openAllHandler();
+                }}>Open All</Button>
+                <Button variant="contained" onClick={() => {
+                    closeAllHandler();
+                }}>Close All</Button>
+            </div>
+            <div className="table" aria-label="simple table"  >
+                <div className="table-head">
+                    <div className="table-row">
+                        <div className="table-cell" />
+                        <div className="table-cell">Dessert (100g serving)</div>
+                        <div className="table-cell" align="right">Calories</div>
+                        <div className="table-cell" align="right">Fat&nbsp;(g)</div>
+                        <div className="table-cell" align="right">Carbs&nbsp;(g)</div>
+                        <div className="table-cell" align="right">Protein&nbsp;(g)</div>
+                    </div>
+                </div>
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="outer-drop" type="outer-drop">
                         {(provided, snapshot) => (
-                            <TableBody ref={provided.innerRef} {...provided.droppableProps}>
+                            <div className="draggable-table table-body" ref={provided.innerRef} {...provided.droppableProps}>
                                 {tableData?.map((row, outerIndex) => (
-                                    <TableRow key={row.id}>
+                                    <div className="table-row" key={row.id}>
                                         <Draggable
                                             key={row.id + "outer" + outerIndex}
                                             draggableId={`outer-drop-${row.id}`}
                                             index={outerIndex}
+                                            className="outer-drop-wrapper"
                                         >
                                             {(provided, snapshot) => (
                                                 <div
@@ -325,6 +381,7 @@ export default function CollapsibleTable() {
                                                                                     <div
                                                                                         ref={provided.innerRef}
                                                                                         {...provided.droppableProps}
+                                                                                        className="inner-title-section"
                                                                                     >
                                                                                         <Draggable
                                                                                             key={
@@ -334,6 +391,7 @@ export default function CollapsibleTable() {
                                                                                             }
                                                                                             draggableId={`inner-title-drop-${row.id}`}
                                                                                             index={outerIndex}
+
                                                                                         >
                                                                                             {(provided, snapshot) => (
                                                                                                 <div
@@ -342,33 +400,33 @@ export default function CollapsibleTable() {
                                                                                                     {...provided.dragHandleProps}
                                                                                                 >
 
-                                                                                                    <TableCell
-                                                                                                        component="th"
-                                                                                                        scope="row"
-                                                                                                        className={`${openRows[outerIndex] === true && 'heading-table-lines'}`}
+                                                                                                    <div
+                                                                                                        // component="td"   
+                                                                                                        // scope="row"
+                                                                                                        className={`${openRows[outerIndex] === true && 'heading-table-lines'} table-cell`}
                                                                                                     >
                                                                                                         <IconButton sx={{ padding: 0 }} onClick={() => toggleRow(outerIndex)}>
                                                                                                             {openRows[outerIndex] !== true ? <AddIcon color="#0000008a" /> : <HorizontalRule color="#0000008a" />}
                                                                                                         </IconButton>
-                                                                                                    </TableCell>
-                                                                                                    <TableCell
-                                                                                                        component="th"
-                                                                                                        scope="row"
+                                                                                                    </div>
+                                                                                                    <div className="table-cell"
+                                                                                                        component="td"
+                                                                                                    // scope="row"
                                                                                                     >
                                                                                                         {row.name}
-                                                                                                    </TableCell>
-                                                                                                    <TableCell align="right">
+                                                                                                    </div>
+                                                                                                    <div className="table-cell" align="right">
                                                                                                         {row.calories}
-                                                                                                    </TableCell>
-                                                                                                    <TableCell align="right">
+                                                                                                    </div>
+                                                                                                    <div className="table-cell" align="right">
                                                                                                         {row.fat}
-                                                                                                    </TableCell>
-                                                                                                    <TableCell align="right">
+                                                                                                    </div>
+                                                                                                    <div className="table-cell" align="right">
                                                                                                         {row.carbs}
-                                                                                                    </TableCell>
-                                                                                                    <TableCell align="right">
+                                                                                                    </div>
+                                                                                                    <div className="table-cell" align="right">
                                                                                                         {row.protein}
-                                                                                                    </TableCell>
+                                                                                                    </div>
                                                                                                 </div>
                                                                                             )}
                                                                                         </Draggable>
@@ -379,6 +437,7 @@ export default function CollapsibleTable() {
                                                                         </div>
                                                                     )}
                                                                 </Draggable>
+
 
                                                                 {row.innerRow.map(
                                                                     (innerRow, innerIndex) => (
@@ -398,31 +457,31 @@ export default function CollapsibleTable() {
                                                                                         {...provided.draggableProps}
                                                                                         {...provided.dragHandleProps}
                                                                                     >
-                                                                                        <TableCell
+                                                                                        <div
                                                                                             component="th"
                                                                                             scope="row"
-                                                                                            className={`inner-table-lines`}
+                                                                                            className={`inner-table-lines table-cell`}
                                                                                         >
                                                                                             <HorizontalRule color="#0000008a" />
-                                                                                        </TableCell>
-                                                                                        <TableCell
+                                                                                        </div>
+                                                                                        <div className="table-cell"
                                                                                             component="th"
                                                                                             scope="row"
                                                                                         >
                                                                                             {innerRow.name}
-                                                                                        </TableCell>
-                                                                                        <TableCell align="right">
+                                                                                        </div>
+                                                                                        <div className="table-cell" align="right">
                                                                                             {innerRow.calories}
-                                                                                        </TableCell>
-                                                                                        <TableCell align="right">
+                                                                                        </div>
+                                                                                        <div className="table-cell" align="right">
                                                                                             {innerRow.fat}
-                                                                                        </TableCell>
-                                                                                        <TableCell align="right">
+                                                                                        </div>
+                                                                                        <div className="table-cell" align="right">
                                                                                             {innerRow.carbs}
-                                                                                        </TableCell>
-                                                                                        <TableCell align="right">
+                                                                                        </div>
+                                                                                        <div className="table-cell" align="right">
                                                                                             {innerRow.protein}
-                                                                                        </TableCell>
+                                                                                        </div>
                                                                                     </div>
                                                                                 </Collapse>
                                                                             )}
@@ -436,15 +495,15 @@ export default function CollapsibleTable() {
                                                 </div>
                                             )}
                                         </Draggable>
-                                    </TableRow>
+                                    </div>
                                 ))}
                                 {provided.placeholder}
-                            </TableBody>
+                            </div>
                         )}
                     </Droppable>
                 </DragDropContext>
 
-            </Table >
+            </div>
         </React.Fragment>
     );
 }

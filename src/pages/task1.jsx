@@ -1,7 +1,7 @@
 import { Box, Button, Container, Typography } from '@mui/material'
 import React from 'react'
-import CollapsibleTable from '../components/CollapsibleTable'
 import { useNavigate } from 'react-router-dom';
+import CustomTable from '../components/Table';
 
 const Task1 = () => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Task1 = () => {
                 <Button variant='contained' onClick={() => navigate(-1)}>Back</Button>
                 <Typography variant='h3' sx={{ textAlign: 'center', width: '100%' }}>Task 1</Typography>
             </Box>
-            <CollapsibleTable />
+            <CustomTable />
         </Container >
     )
 }
